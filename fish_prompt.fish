@@ -596,6 +596,20 @@ end
 ################
 # => Git segment
 ################
+function __budspencer_vcs_icon -d 'Returns a icon depending on the remote'
+  set -l remote (command git ls-remote --get-url 2> /dev/null)
+  if test -n "$remote"
+    switch $remote
+      case '*github*'
+        echo -n " "\uF113
+      case '*gitlab*'
+        echo -n " "\uF296
+      case '*'
+        echo -n " "\uF1D3
+    end
+  end
+end
+
 function __budspencer_prompt_git_branch -d 'Return the current branch name'
   set -l branch (command git symbolic-ref HEAD 2> /dev/null | sed -e 's|^refs/heads/||')
   if not test $branch > /dev/null
@@ -606,7 +620,7 @@ function __budspencer_prompt_git_branch -d 'Return the current branch name'
         set_color -b $budspencer_colors[11]
         switch $pwd_style
           case short long
-            echo -n ''(set_color $budspencer_colors[1])' ➦ '$commit' '(set_color $budspencer_colors[11])
+            echo -n ''(set_color $budspencer_colors[1])(__budspencer_vcs_icon)' ➦ '$commit' '(set_color $budspencer_colors[11])
           case none
             echo -n ''
         end
@@ -617,7 +631,7 @@ function __budspencer_prompt_git_branch -d 'Return the current branch name'
       set_color -b $budspencer_colors[9]
       switch $pwd_style
         case short long
-          echo -n ''(set_color $budspencer_colors[1])'  '$position' '(set_color $budspencer_colors[9])
+          echo -n ''(set_color $budspencer_colors[1])(__budspencer_vcs_icon)'  '$position' '(set_color $budspencer_colors[9])
         case none
           echo -n ''
       end
@@ -628,7 +642,7 @@ function __budspencer_prompt_git_branch -d 'Return the current branch name'
     set_color -b $budspencer_colors[3]
     switch $pwd_style
       case short long
-        echo -n ''(set_color $budspencer_colors[1])'  '$branch' '(set_color $budspencer_colors[3])
+        echo -n ''(set_color $budspencer_colors[1])(__budspencer_vcs_icon)'  '$branch' '(set_color $budspencer_colors[3])
       case none
         echo -n ''
     end
